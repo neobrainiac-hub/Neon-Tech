@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON TECH | Checkout</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="checkout-body">
+    <nav class="glass" style="position: static; margin-bottom: 2rem;">
+        <div class="container" style="justify-content: center;">
+            <a href="index.html" class="brand">NEON<span class="gradient-text">TECH</span></a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 4rem;">
+        <!-- Progress Stepper -->
+        <div class="checkout-stepper reveal">
+            <div class="step completed">
+                <div class="step-num"><i class="fas fa-check"></i></div>
+                <span>Bag</span>
+            </div>
+            <div style="width: 100px; height: 1px; background: var(--border);"></div>
+            <div class="step active">
+                <div class="step-num">2</div>
+                <span>Checkout</span>
+            </div>
+            <div style="width: 100px; height: 1px; background: var(--border);"></div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <span>Payment</span>
+            </div>
+        </div>
+
+        <div class="checkout-layout">
+            <!-- Left: Forms -->
+            <form id="checkoutForm">
+                <!-- 1. Customer Information -->
+                <div class="checkout-section reveal">
+                    <h2 class="heading-sm" style="margin-bottom: 2rem;"><i class="fas fa-user-circle" style="color: var(--primary);"></i> Customer Information</h2>
+                    <div class="form-grid">
+                        <div class="input-group form-full">
+                            <label>Full Name</label>
+                            <input type="text" class="checkout-input" id="cName" placeholder="Elon Musk" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Email Address</label>
+                            <input type="email" class="checkout-input" id="cEmail" placeholder="elon@future.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Phone Number</label>
+                            <input type="tel" class="checkout-input" id="cPhone" placeholder="+1 (555) 000-0000" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Shipping Address -->
+                <div class="checkout-section reveal">
+                    <h2 class="heading-sm" style="margin-bottom: 2rem;"><i class="fas fa-truck" style="color: var(--primary);"></i> Shipping Address</h2>
+                    <div class="form-grid">
+                        <div class="input-group form-full">
+                            <label>Street Address</label>
+                            <input type="text" class="checkout-input" id="sAddress" placeholder="1 Space Way" required>
+                        </div>
+                        <div class="input-group">
+                            <label>City</label>
+                            <input type="text" class="checkout-input" id="sCity" placeholder="Los Angeles" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Postal Code</label>
+                            <input type="text" class="checkout-input" id="sZip" placeholder="90001" required>
+                        </div>
+                        <div class="input-group">
+                            <label>Country</label>
+                            <input type="text" class="checkout-input" id="sCountry" placeholder="United States" required>
+                        </div>
+                        <div class="input-group">
+                            <label>State / Region</label>
+                            <input type="text" class="checkout-input" id="sState" placeholder="California" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Payment Method -->
+                <div class="checkout-section reveal">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 class="heading-sm" style="margin: 0;"><i class="fas fa-credit-card" style="color: var(--primary);"></i> Payment Method</h2>
+                        <div style="font-size: 0.7rem; color: #10b981; font-weight: 800;"><i class="fas fa-lock"></i> 256-BIT SSL SECURED</div>
+                    </div>
+                    
+                    <div class="payment-methods-grid">
+                        <div class="payment-opt active" data-method="card">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Card</span>
+                        </div>
+                        <div class="payment-opt" data-method="paypal">
+                            <i class="fab fa-paypal"></i>
+                            <span>PayPal</span>
+                        </div>
+                        <div class="payment-opt" data-method="stripe">
+                            <i class="fab fa-stripe"></i>
+                            <span>Stripe</span>
+                        </div>
+                        <div class="payment-opt" data-method="crypto">
+                            <i class="fab fa-bitcoin"></i>
+                            <span>Crypto</span>
+                        </div>
+                    </div>
+
+                    <!-- Card Form -->
+                    <div id="payment-card" class="payment-form-area active">
+                        <div class="form-grid">
+                            <div class="input-group form-full">
+                                <label>Card Number</label>
+                                <input type="text" class="checkout-input" placeholder="0000 0000 0000 0000">
+                            </div>
+                            <div class="input-group">
+                                <label>Expiry Date</label>
+                                <input type="text" class="checkout-input" placeholder="MM / YY">
+                            </div>
+                            <div class="input-group">
+                                <label>CVV</label>
+                                <input type="text" class="checkout-input" placeholder="123">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Payment Placeholders -->
+                    <div id="payment-paypal" class="payment-form-area">
+                        <p style="opacity: 0.6; margin-bottom: 1.5rem;">You will be redirected to PayPal's secure portal.</p>
+                        <div class="btn btn-secondary w-full" style="background: #ffc439; color: #111; border: none;">Proceed with PayPal</div>
+                    </div>
+
+                    <div id="payment-stripe" class="payment-form-area">
+                        <p style="opacity: 0.6; margin-bottom: 1.5rem;">Secure processing via Stripe Radar.</p>
+                        <div class="btn btn-secondary w-full" style="background: #635bff; color: #fff; border: none;">Pay with Stripe</div>
+                    </div>
+
+                    <div id="payment-crypto" class="payment-form-area">
+                        <p style="opacity: 0.6; margin-bottom: 1rem;">Send exactly the total to the address below:</p>
+                        <div class="checkout-input" style="font-family: monospace; font-size: 0.8rem; background: rgba(255,255,255,0.05);">0x71C7656EC7ab88b098defB751B7401B5f6d8976F</div>
+                        <p style="font-size: 0.7rem; color: var(--primary); margin-top: 0.5rem;"><i class="fas fa-info-circle"></i> Supported: ETH, BTC, USDT (ERC20)</p>
+                    </div>
+                </div>
+
+                <button type="submit" id="mainSubmitBtn" class="btn btn-primary w-full" style="padding: 1.5rem; font-size: 1.1rem; border-radius: 20px;">Complete Gear Order</button>
+            </form>
+
+            <!-- Right: Order Summary -->
+            <div>
+                <div class="checkout-section checkout-summary-sticky reveal">
+                    <h2 class="heading-sm" style="margin-bottom: 2rem;">Order Summary</h2>
+                    <div id="orderItems" style="margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                        <!-- Injected by checkout.js -->
+                    </div>
+
+                    <!-- Promo Code Area -->
+                    <div style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(255,255,255,0.03); border-radius: 16px; border: 1px solid var(--border);">
+                        <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.8rem; display: block;">Promotional Code</label>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="promoInput" class="checkout-input" style="padding: 0.6rem 1rem;" placeholder="e.g. NEON20">
+                            <button type="button" onclick="applyPromoCode()" class="btn btn-secondary btn-sm" style="padding: 0 1.2rem;">Apply</button>
+                        </div>
+                        <div id="promoFeedback" style="font-size: 0.7rem; margin-top: 0.5rem;"></div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div class="summary-item">
+                            <span>Subtotal</span>
+                            <span id="subTotal">$0</span>
+                        </div>
+                        <div id="discountRow" class="summary-item" style="display: none; color: #10b981;">
+                            <span>Discount <span id="promoLabel"></span></span>
+                            <span id="orderDiscount">-$0</span>
+                        </div>
+                        <div class="summary-item">
+                            <div style="display: flex; flex-direction: column;">
+                                <span>Shipping</span>
+                                <span id="shippingThresholdMsg" style="font-size: 0.65rem; color: var(--primary);"></span>
+                            </div>
+                            <span id="shippingFee">$15</span>
+                        </div>
+                        <div class="summary-item summary-total" style="border-top: 1px solid var(--border); padding-top: 1.5rem; margin-top: 0.5rem;">
+                            <span style="font-size: 1.2rem; font-weight: 800;">Total</span>
+                            <span id="totalCost" style="font-size: 1.5rem; font-weight: 800; color: var(--primary);">$0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Overlay -->
+    <div id="successOverlay" class="success-overlay" style="padding-top: 5rem;">
+        <i class="fas fa-check-circle success-icon" style="margin-bottom: 1rem;"></i>
+        <h1 class="heading-lg">Gear Order Initiated!</h1>
+        
+        <div class="receipt-container reveal" style="width: 100%; max-width: 600px; margin-top: 2rem; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;">
+                <div style="font-family: monospace; color: var(--primary); font-size: 1.1rem;">
+                    ORDER ID: <span id="orderIdDisplay">#00000</span>
+                </div>
+                <div id="paymentStatusReceipt" style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #10b981;">
+                    <i class="fas fa-check-double"></i> Payment Confirmed
+                </div>
+            </div>
+
+            <!-- Detailed Grid -->
+            <div id="receiptItems" style="margin-bottom: 2rem;">
+                <!-- Injected by JS -->
+            </div>
+
+            <div class="summary-item" style="border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                <span>Total Amount Paid</span>
+                <span id="receiptTotal" style="font-weight: 800; color: var(--primary); font-size: 1.2rem;">$0</span>
+            </div>
+
+            <div style="margin-top: 2.5rem; background: rgba(59, 130, 246, 0.05); padding: 1.5rem; border-radius: 16px; border: 1px dashed var(--primary);">
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                    <i class="fas fa-shuttle-space" style="color: var(--primary); font-size: 1.5rem;"></i>
+                    <h4 style="margin: 0; font-size: 1rem;">Hyper-Speed Delivery Estimate</h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem;">Expected Arrival:</p>
+                        <p id="deliveryEstimate" style="font-weight: 700; font-size: 1.1rem; color: #fff;">Quantum Logistics Tracking Active</p>
+                    </div>
+                    <div style="font-size: 0.7rem; background: var(--primary); color: #fff; padding: 0.3rem 0.6rem; border-radius: 4px; font-weight: 800;">IN TRANSIT</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-top: 3rem; display: flex; gap: 1rem;">
+            <button onclick="window.print()" class="btn btn-secondary"><i class="fas fa-print"></i> Print Receipt</button>
+            <a href="index.html" class="btn btn-primary">Return to Store</a>
+        </div>
+    </div>
+
+    <script src="js/checkout.js"></script>
+</body>
+</html>

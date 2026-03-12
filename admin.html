@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Tech | Admin Command Center</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --admin-sidebar: #0f172a;
+            --admin-bg: #020617;
+        }
+
+        body.admin-body {
+            display: flex;
+            min-height: 100vh;
+            background: var(--admin-bg);
+            cursor: default !important;
+        }
+
+        .admin-sidebar {
+            width: 280px;
+            background: var(--admin-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+        }
+
+        .admin-main {
+            flex-grow: 1;
+            margin-left: 280px;
+            padding: 3rem;
+        }
+
+        .admin-nav-item {
+            padding: 1rem;
+            border-radius: 12px;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav-item:hover, .admin-nav-item.active {
+            background: var(--primary-glow);
+            color: var(--primary);
+        }
+
+        .admin-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .admin-table th {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-pill {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .status-pill.in-stock { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+        .status-pill.out-of-stock { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .status-pill.status-processing { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .status-pill.status-shipped { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .status-pill.status-delivered { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+
+        .admin-login-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 400px;
+            padding: 3rem;
+            background: var(--surface);
+            border-radius: 30px;
+            border: 1px solid var(--primary-glow);
+            text-align: center;
+        }
+
+        .admin-form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .admin-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.6);
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: #fff;
+            outline: none;
+        }
+
+        .admin-input:focus { border-color: var(--primary); }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            width: 600px;
+            background: var(--surface);
+            border-radius: 30px;
+            padding: 3rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="admin-body">
+    <!-- Login Overlay -->
+    <div id="loginOverlay" class="admin-login-overlay">
+        <div class="login-card">
+            <h2 class="heading-md" style="margin-bottom: 2rem;">Admin Login</h2>
+            <form id="loginForm">
+                <div class="admin-form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" class="admin-input" placeholder="admin" required>
+                </div>
+                <div class="admin-form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="admin-input" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Access Command Center</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar" style="display: none;">
+        <div style="font-size: 1.5rem; font-weight: 800; margin-bottom: 3rem;">
+            NEON<span class="gradient-text">TECH</span> <span style="font-size: 0.8rem; font-weight: 400; opacity: 0.5;">ADMIN</span>
+        </div>
+        
+        <div class="admin-nav-item active" data-view="analytics">
+            <i class="fas fa-chart-line"></i> Analytics
+        </div>
+        <div class="admin-nav-item" data-view="products">
+            <i class="fas fa-box"></i> Products
+        </div>
+        <div class="admin-nav-item" data-view="categories">
+            <i class="fas fa-tags"></i> Categories
+        </div>
+        <div class="admin-nav-item" data-view="orders">
+            <i class="fas fa-shopping-cart"></i> Orders
+        </div>
+        <div class="admin-nav-item" data-view="cms">
+            <i class="fas fa-edit"></i> CMS
+        </div>
+        
+        <div style="margin-top: auto;">
+            <div class="admin-nav-item" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </div>
+    </aside>
+
+    <!-- Admin Main Content -->
+    <main class="admin-main" id="adminMain" style="display: none;">
+        <!-- Analytics View -->
+        <div id="view-analytics" class="view">
+            <h2 class="heading-md" style="margin-bottom: 2rem;">Overview</h2>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem;">
+                <div class="admin-card">
+                    <div style="font-size: 0.8rem; opacity: 0.5; margin-bottom: 0.5rem;">Total Products</div>
+                    <div id="stat-products" style="font-size: 2rem; font-weight: 800;">40</div>
+                </div>
+                <div class="admin-card">
+                    <div style="font-size: 0.8rem; opacity: 0.5; margin-bottom: 0.5rem;">Total Revenue</div>
+                    <div id="stat-revenue" style="font-size: 2rem; font-weight: 800;">$42,500</div>
+                </div>
+                <div class="admin-card">
+                    <div style="font-size: 0.8rem; opacity: 0.5; margin-bottom: 0.5rem;">Active Orders</div>
+                    <div id="stat-orders" style="font-size: 2rem; font-weight: 800;">12</div>
+                </div>
+                <div class="admin-card">
+                    <div style="font-size: 0.8rem; opacity: 0.5; margin-bottom: 0.5rem;">Low Stock</div>
+                    <div id="stat-stock" style="font-size: 2rem; font-weight: 800; color: #ef4444;">4</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products View -->
+        <div id="view-products" class="view" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="heading-md">Products Management</h2>
+                <div style="display: flex; gap: 1rem;">
+                    <input type="text" id="adminSearch" class="admin-input" style="width: 250px; padding: 0.5rem 1rem;" placeholder="Search products...">
+                    <button class="btn btn-primary btn-sm" onclick="openProductModal()">+ Add Product</button>
+                </div>
+            </div>
+            <div class="admin-card" style="padding: 0;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminProductTable">
+                        <!-- Products injected by admin.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Placeholder for other views -->
+        <div id="view-categories" class="view" style="display: none;">
+            <h2 class="heading-md">Categories</h2>
+            <p style="opacity: 0.5;">Category management tools coming soon.</p>
+        </div>
+        <div id="view-orders" class="view" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h2 class="heading-md">Order Management</h2>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-secondary btn-sm" onclick="clearOrders()"><i class="fas fa-trash"></i> Clear Logs</button>
+                </div>
+            </div>
+            <div class="admin-card" style="padding: 0;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Payment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOrderTable">
+                        <!-- Orders injected by admin.js -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div id="view-cms" class="view" style="display: none;">
+            <h2 class="heading-md">CMS - Homepage Editor</h2>
+            <p style="opacity: 0.5;">Front-end content editor coming soon.</p>
+        </div>
+    </main>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <h3 class="heading-sm" style="margin-bottom: 2rem;" id="modalTitle">Add New Product</h3>
+            <form id="productForm">
+                <input type="hidden" id="editCategoryIndex">
+                <input type="hidden" id="editProductIndex">
+                
+                <div class="admin-form-group">
+                    <label>Category</label>
+                    <select id="pCategory" class="admin-input">
+                        <option value="smartphones">Smartphones</option>
+                        <option value="laptops">Laptops</option>
+                        <option value="gaming">Gaming Gear</option>
+                        <option value="smarthome">Smart Home</option>
+                        <option value="accessories">Accessories</option>
+                    </select>
+                </div>
+                <div class="admin-form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="pName" class="admin-input" required>
+                </div>
+                <div class="admin-form-group">
+                    <label>Description</label>
+                    <textarea id="pDesc" class="admin-input" style="height: 100px;" required></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="admin-form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="pPrice" class="admin-input" required>
+                    </div>
+                    <div class="admin-form-group">
+                        <label>Stock</label>
+                        <input type="number" id="pStock" class="admin-input" required>
+                    </div>
+                </div>
+                <div class="admin-form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="pImg" class="admin-input" required>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeProductModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>
